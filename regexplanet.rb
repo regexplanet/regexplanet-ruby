@@ -1,5 +1,5 @@
 require 'sinatra'
-require "sinatra/json"
+require "sinatra/jsonp"
 
 configure do
 	mime_type :ico, 'image/x-icon'
@@ -7,7 +7,7 @@ configure do
 end
 
 error do
-	json( {
+	jsonp( {
 		:success => false,
 		:message => env['sinatra.error'].message,
 		:error_name => env['sinatra.error'].name,
@@ -15,7 +15,7 @@ error do
 end
 
 get '/status.json' do
-	json( {
+	jsonp( {
 		:success => true,
 		:message => "OK",
 		"request.host" => request.host,
@@ -49,7 +49,7 @@ get '/test.json' do
 
 	output << "</table>\n"
 
-	json( {
+	jsonp( {
 		:success => true,
 		:message => "OK",
 		:html => output,
