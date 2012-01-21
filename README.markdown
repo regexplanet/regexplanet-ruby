@@ -1,4 +1,4 @@
-# regexplanet-python
+# regexplanet-ruby
 
 This is the Ruby backend for RegexPlanet, a tool for online regular expression testing.
 
