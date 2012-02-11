@@ -31,23 +31,23 @@ end
 get '/test.json' do
 	output = ""
 
-	output << "<table>\n"
+	output << '<table class="table table-bordered table-striped" style="width:auto;">\n'
 
-	output << "\t<tr>\n"
-	output << "\t\t<td>Regular Expression</td>\n"
-	output << "\t\t<td>"
+	output << '\t<tr>\n'
+	output << '\t\t<td>Regular Expression</td>\n'
+	output << '\t\t<td>'
 	output << h(params[:regex])
-	output << "</td>\n"
-	output << "\t</tr>\n"
+	output << '</td>\n'
+	output << '\t</tr>\n'
 
-	output << "\t<tr>\n"
-	output << "\t\t<td>Replacement</td>\n"
-	output << "\t\t<td>"
+	output << '\t<tr>\n'
+	output << '\t\t<td>Replacement</td>\n'
+	output << '\t\t<td>'
 	output << h(params[:replacement])
-	output << "</td>\n"
-	output << "\t</tr>\n"
+	output << '</td>\n'
+	output << '\t</tr>\n'
 
-	output << "</table>\n"
+	output << '</table>\n'
 
 	jsonp( {
 		:success => true,
