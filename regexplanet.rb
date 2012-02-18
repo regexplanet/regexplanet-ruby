@@ -50,6 +50,21 @@ get '/test.json' do
 	output << h(params[:replacement])
 	output << "</td>\n"
 
+	options = 0
+	str_options = request_params_multi(request.query_string)["option"]
+	if str_options
+		if str_options.include?("comment")
+			options += Regexp::EXTENDED
+		end
+		if str_options.include?("dotall")
+			options += Regexp::MULTILINE
+		end
+		if str_options.include?("ignorecase")
+			options += Regexp::IGNORECASE
+		end
+	end
+
+	regex = Regexp.new(str_regex, options)
 	# when ruby 1.9
 	#if Regexp.try_convert(str_regex)
 	#	output << "\t<tr>\n"
@@ -64,9 +79,47 @@ get '/test.json' do
 	#	} )
 	#end
 
-	regex = Regexp.new(str_regex)
+	if regex
+		output << "\t<tr>\n"
+		output << "\t\t<td>Options</td>\n"
+		output << "\t\t<td>"
+		output << regex.options.to_s
+		output << "</td>\n"
+		output << "\t</tr>\n"
 
-	output << "\t</tr>\n"
+		if regex.options != 0
+			output << "\t<tr>\n"
+			output << "\t\t<td>Options as constants</td>\n"
+			output << "\t\t<td>"
+			if (regex.options & Regexp::IGNORECASE) != 0
+				output << "Regexp::IGNORECASE "
+			end
+			if (regex.options & Regexp::EXTENDED) != 0
+				output << "Regexp::EXTENDED "
+			end
+			if (regex.options & Regexp::MULTILINE) != 0
+				output << "Regexp::MULTILINE "
+			end
+			#if (regex.options & Regexp::FIXEDENCODING) != 0
+			#	output << "Regexp::FIXEDENCODING "
+			#end
+			#if (regex.options & Regexp::NOENCODING) != 0
+			#	output << "Regexp::NOENCODING "
+			#end
+			output << "</td>\n"
+			output << "\t</tr>\n"
+		end
+
+		#names = regex.names
+		#if names
+		#	output << "\t<tr>\n"
+		#	output << "\t\t<td>Named captures (names)</td>\n"
+		#	output << "\t\t<td>"
+		#	output << h(names.to_s)
+		#	output << "</td>\n"
+		#end
+
+	end
 
 	output << "</table>\n"
 
@@ -75,6 +128,7 @@ get '/test.json' do
 	output << "\t<tr>\n"
 	output << "\t\t<th style=\"text-align:center;\">Test</th>\n"
 	output << "\t\t<th>Input</th>"
+	output << "\t\t<th>=~</th>"
 	output << "\t\t<th>match()</th>"
 	output << "\t</tr>\n"
 
@@ -104,6 +158,16 @@ get '/test.json' do
 			output << "\t\t<td>"
 			output << h(input)
 			output << "</td>\n"
+
+			output << "\t\t<td>"
+			eq = regex =~ input
+			if eq:
+				output << h(eq.to_s)
+			else
+				output << "<i>nil</i>"
+			end
+			output << "</td>\n"
+
 			md = regex.match(input)
 			if md == nil
 				output << "\t\t<td><i>"
@@ -117,10 +181,16 @@ get '/test.json' do
 						first = false
 					else
 						output << "\t<tr>\n"
-						output << "\t\t<td colspan=\"2\" style=\"text-align:right;\">regex.match(matchdata.post_match)</td>"
+						output << "\t\t<td colspan=\"3\" style=\"text-align:right;\">regex.match(matchdata.post_match)</td>"
 					end
 					output << "\t\t<td>"
-					output << h(md.inspect)
+					for mdindex in 0..md.size-1
+						output << "["
+						output << mdindex.to_s
+						output << "]: "
+						output << h(md[mdindex])
+						output << "<br/>"
+					end
 					output << "</td>\n"
 					output << "\t</tr>\n"
 					md = regex.match(md.post_match)
