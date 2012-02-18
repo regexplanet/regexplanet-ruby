@@ -161,7 +161,7 @@ get '/test.json' do
 
 			output << "\t\t<td>"
 			eq = regex =~ input
-			if eq:
+			if eq
 				output << h(eq.to_s)
 			else
 				output << "<i>nil</i>"
