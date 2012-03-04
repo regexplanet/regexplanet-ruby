@@ -6,6 +6,8 @@ require 'sinatra/reloader'
 configure do
 	mime_type :ico, 'image/x-icon'
 	set :static_cache_control, [:public, {:max_age => 604800 } ]
+	#set :protection, :except => [:frame_options ]
+	#disable :protection
 end
 
 error do
@@ -16,7 +18,13 @@ error do
 	} )
 end
 
-get '/status.json' do
+
+def get_or_post(path, opts={}, &block)
+  get(path, opts, &block)
+  post(path, opts, &block)
+end
+
+get_or_post '/status.json' do
 	jsonp( {
 		:success => true,
 		:message => "OK",
@@ -30,10 +38,38 @@ get '/status.json' do
 	} )
 end
 
-get '/test.json' do
+options '/test.json' do
+	content_type :text
+	headers \
+		'Access-Control-Allow-Origin' => '*',
+		'Access-Control-Allow-Methods' => 'POST, GET',
+		'Access-Control-Max-Age' => '604800'
+	body 'Yes, CORS is allowed!'
+end
+
+get_or_post '/test.json' do
+	content_type :text
+	headers \
+		'Access-Control-Allow-Origin' => '*',
+		'Access-Control-Allow-Methods' => 'POST, GET',
+		'Access-Control-Max-Age' => '604800'
+
 	output = ""
 
 	str_regex = params[:regex]
+
+	if str_regex.nil? || str_regex.length() == 0
+		return jsonp(
+			:success => false,
+			:message => "No regular expression to test"
+			)
+	end
+
+	if request.request_method == "get"
+		form_data = request.query_string
+	else
+		form_data = request.env["rack.input"].read
+	end
 
 	output << "<table class=\"table table-bordered table-striped\" style=\"width:auto;\">\n"
 
@@ -51,7 +87,7 @@ get '/test.json' do
 	output << "</td>\n"
 
 	options = 0
-	str_options = request_params_multi(request.query_string)["option"]
+	str_options = request_params_multi(form_data)[:option]
 	if str_options
 		if str_options.include?("comment")
 			options += Regexp::EXTENDED
@@ -110,6 +146,7 @@ get '/test.json' do
 			output << "\t</tr>\n"
 		end
 
+		# when ruby1.9
 		#names = regex.names
 		#if names
 		#	output << "\t<tr>\n"
@@ -132,9 +169,7 @@ get '/test.json' do
 	output << "\t\t<th>match()</th>"
 	output << "\t</tr>\n"
 
-	inputs = request_params_multi(request.query_string)["input"]
-
-	print inputs
+	inputs = request_params_multi(form_data)["input"]
 
 	if not inputs
 		output << "\t<tr>\n"
@@ -201,9 +236,7 @@ get '/test.json' do
 
 	output << "</table>\n"
 
-	content_type :text
 	jsonp( {
-			:debug => inputs,
 		:success => true,
 		:message => "OK",
 		:html => output,
