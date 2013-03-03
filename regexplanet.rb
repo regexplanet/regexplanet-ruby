@@ -101,7 +101,22 @@ get_or_post '/test.json' do
 		end
 	end
 
-	regex = Regexp.new(str_regex, options)
+	begin
+		regex = Regexp.new(str_regex, options)
+	rescue Exception => e
+		output << "\t<tr>\n"
+		output << "\t\t<td>Exception</td>\n"
+		output << "\t\t<td>"
+		output << e.message
+		output << "</td>\n"
+		output << "\t</tr>\n"
+		output << "</table>\n"
+		return jsonp(
+			:success => false,
+			:message => "Regexp.new Exception: " + e.message,
+			:html => output
+			)
+	end
 	# when ruby 1.9
 	#if Regexp.try_convert(str_regex)
 	#	output << "\t<tr>\n"
