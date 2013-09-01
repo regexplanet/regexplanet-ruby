@@ -36,6 +36,7 @@ get_or_post '/status.json' do
 		:RUBY_PATCHLEVEL => RUBY_PATCHLEVEL,
 		:RUBY_RELEASE_DATE => RUBY_RELEASE_DATE,
 		:RUBY_VERSION => RUBY_VERSION,
+		"$," => $,,
 	} )
 end
 
