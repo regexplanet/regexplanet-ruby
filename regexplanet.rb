@@ -1,3 +1,5 @@
+#!/usr/local/bin/ruby
+
 require 'cgi'
 require 'sinatra'
 require "sinatra/jsonp"
@@ -6,6 +8,7 @@ require 'sinatra/reloader'
 configure do
 	mime_type :ico, 'image/x-icon'
 	set :static_cache_control, [:public, {:max_age => 604800 } ]
+	set :bind, '0.0.0.0'
 	#set :protection, :except => [:frame_options ]
 	#disable :protection
 end

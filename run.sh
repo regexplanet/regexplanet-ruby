@@ -1,3 +1,5 @@
-export PATH=$PATH:/var/lib/gems/1.8/bin
-echo $PATH
-foreman start
+#!/bin/bash
+
+
+docker build -t regexplanet-ruby .
+docker run -p 4000:4000 --expose 4000 -e PORT='4000' regexplanet-ruby
