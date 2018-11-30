@@ -31,6 +31,8 @@ get_or_post '/status.json' do
 	jsonp( {
 		:success => true,
 		:message => "OK",
+		:commit => ENV['COMMIT'],
+		:lastmod => ENV['LASTMOD'],
 		:version => RUBY_VERSION,
 		"request.host" => request.host,
 		"request.port" => request.port,
