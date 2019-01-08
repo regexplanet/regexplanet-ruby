@@ -4,9 +4,11 @@ require 'cgi'
 require 'sinatra'
 require "sinatra/jsonp"
 require 'sinatra/reloader'
+require 'time'
 
 configure do
 	mime_type :ico, 'image/x-icon'
+	mime_type :svg, 'image/svg+xml'
 	set :static_cache_control, [:public, {:max_age => 604800 } ]
 	set :bind, '0.0.0.0'
 	#set :protection, :except => [:frame_options ]
@@ -28,11 +30,18 @@ def get_or_post(path, opts={}, &block)
 end
 
 get_or_post '/status.json' do
+	headers \
+		'Access-Control-Allow-Origin' => '*',
+		'Access-Control-Allow-Methods' => 'POST, GET',
+		'Access-Control-Max-Age' => '604800'
+
 	jsonp( {
 		:success => true,
 		:message => "OK",
 		:commit => ENV['COMMIT'],
 		:lastmod => ENV['LASTMOD'],
+		:tech => "Ruby #{RUBY_VERSION}",
+		:timestamp => Time.now.utc.iso8601,
 		:version => RUBY_VERSION,
 		"request.host" => request.host,
 		"request.port" => request.port,

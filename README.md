@@ -14,5 +14,5 @@ See [Ruby online regex test page](http://www.regexplanet.com/advanced/ruby/index
 
  * Ruby
  * Docker
- * Heroku
+ * Zeit
  * Sinatra
