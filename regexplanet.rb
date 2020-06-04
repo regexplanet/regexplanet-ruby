@@ -275,7 +275,7 @@ get_or_post '/test.json' do
 end
 
 get '/' do
-	redirect 'http://www.regexplanet.com/advanced/ruby/index.html'
+	redirect 'https://www.regexplanet.com/advanced/ruby/index.html'
 end
 
 helpers do

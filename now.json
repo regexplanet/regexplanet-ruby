@@ -1,8 +1,0 @@
-{
-    "name": "regexplanet-ruby",
-    "alias": "regexplanet-ruby.now.sh",
-    "features": {
-        "cloud": "v1"
-    },
-    "type": "docker"
-}
