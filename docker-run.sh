@@ -1,7 +1,16 @@
-#!/bin/bash
+#!/usr/bin/env bash
+#
+# run the docker container version locally
+#
+
+set -o errexit
+set -o pipefail
+set -o nounset
 
 
 docker build -t regexplanet-ruby .
+
+
 docker run \
 	--expose 4000 \
 	--env COMMIT=$(git rev-parse --short HEAD)-local \

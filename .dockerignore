@@ -1,9 +1,9 @@
+Dockerfile
 .dockerignore
 .editorconfig
 .git/
 .github/
 .gitignore
-Dockerfile
 LICENSE.txt
 *.md
 *.sh

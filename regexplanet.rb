@@ -1,4 +1,4 @@
-#!/usr/local/bin/ruby
+#!/usr/bin/env ruby
 
 require 'cgi'
 require 'sinatra'
@@ -11,6 +11,7 @@ configure do
 	mime_type :svg, 'image/svg+xml'
 	set :static_cache_control, [:public, {:max_age => 604800 } ]
 	set :bind, '0.0.0.0'
+	set :host_authorization, { permitted_hosts: [] }
 	#set :protection, :except => [:frame_options ]
 	#disable :protection
 end
@@ -43,6 +44,7 @@ get_or_post '/status.json' do
 		:tech => "Ruby #{RUBY_VERSION}",
 		:timestamp => Time.now.utc.iso8601,
 		:version => RUBY_VERSION,
+		:detail => RUBY_DESCRIPTION,
 		"request.host" => request.host,
 		"request.port" => request.port,
 		:RUBY_DESCRIPTION => RUBY_DESCRIPTION,
@@ -275,7 +277,9 @@ get_or_post '/test.json' do
 end
 
 get '/' do
-	redirect 'https://www.regexplanet.com/advanced/ruby/index.html'
+	headers \
+		'Content-Type' => 'text/plain'
+	"Running Ruby " + RUBY_VERSION + " on " + RUBY_PLATFORM
 end
 
 helpers do
